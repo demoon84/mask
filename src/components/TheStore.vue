@@ -11,7 +11,8 @@
           <div>{{store.name}}</div>
           <div>{{store.addr}}</div>
           <div v-if="getKoTime(store.stock_at)">{{getKoTime(store.stock_at)}}</div>
-          <el-button class="store__view-map" type="success" size="mini" @click="handleFind(store.name, store.lat, store.lng)">위치보기</el-button>
+          <el-button class="store__view-map" type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
+          <el-button class="store__find-load" type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
         </li>
       </template>
     </ul>
@@ -35,7 +36,7 @@
     },
 
     methods: {
-      handleFind(name, lat, lng) {
+      handleViewMap(name, lat, lng) {
         this.viewMap = true;
 
         const mapContainer = document.getElementById('map'), // 지도를 표시할 div
@@ -52,6 +53,10 @@
           marker.setPosition(map.getCenter());
           marker.setMap(map);
         }
+      },
+
+      handleFindLoad(name, lat, lng) {
+        location.href = `https://map.kakao.com/link/to/${name},${lat},${lng}`;
       },
 
       getsStatNumber(stat) {
@@ -106,6 +111,14 @@
       position: absolute;
       top: 5px;
       right: 5px;
+      width: 80px;
+    }
+
+    &__find-load {
+      position: absolute;
+      top: 37px;
+      right: 5px;
+      width: 80px;
     }
 
     &__list {
