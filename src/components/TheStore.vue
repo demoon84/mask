@@ -2,6 +2,7 @@
   <div :class="['store', {'store--map-view':viewMap}]">
     <div :class="['store__map', {'store__map--active':viewMap}]">
       <div id="map" style="width: 100%; height: 100%"></div>
+      <el-button class="store__btn-map-close" icon="el-icon-close" type="danger" circle @click="handleCloseMap"></el-button>
     </div>
 
     <ul :class="['store__list', {'store__list--active':viewMap}]">
@@ -56,27 +57,27 @@
           marker.setMap(map);
         }
       },
-
+      handleCloseMap() {
+        this.viewMap = false;
+      },
       handleFindLoad(name, lat, lng) {
         location.href = `https://map.kakao.com/link/to/${name},${lat},${lng}`;
       },
-
       getsStatNumber(stat) {
-        if (stat == 'plenty') {
+        if (stat === 'plenty') {
           return '100개 이상';
         }
-        if (stat == 'some') {
-          return '30개 ~ 100개';
+        if (stat === 'some') {
+          return '30개~100개';
         }
-        if (stat == 'few') {
-          return '2개 ~ 30개';
+        if (stat === 'few') {
+          return '2개~30개';
         }
-        if (stat == 'empty') {
+        if (stat === 'empty') {
           return '1개 이하';
         }
         return '없음';
       },
-
       getKoTime(time) {
         if (!time) {
           return false;
@@ -92,7 +93,7 @@
   };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .store {
     &__map {
       top: 0;
@@ -113,6 +114,13 @@
       position: absolute;
       top: 15px;
       right: 15px;
+    }
+
+    &__btn-map-close {
+      position: fixed;
+      top: 250px;
+      right: 15px;
+      z-index: 2;
     }
 
     &__list {
