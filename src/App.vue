@@ -7,6 +7,7 @@
 <script>
   import axios from 'axios';
   import Store from './components/TheStore';
+  import {Loading} from 'element-ui';
 
   export default {
     name: 'App',
@@ -16,11 +17,18 @@
     },
     data() {
       return {
-        stores: []
+        stores: [],
+        loading: null
       };
     },
 
+    created() {
+      this.loading = Loading.service({fullscreen: true});
+
+    },
+
     beforeMount() {
+
       navigator.geolocation.getCurrentPosition((position) => {
         axios.get('https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json', {
                params: {
@@ -30,6 +38,8 @@
                }
              })
              .then((response) => {
+               this.loading.close();
+
                this.stores = response.data.stores;
              });
       }, () => {}, {
