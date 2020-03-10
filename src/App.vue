@@ -1,28 +1,54 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <StoreList :stores="stores" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+  import axios from 'axios';
+  import StoreList from './components/StoreList';
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  export default {
+    name: 'App',
+
+    components: {
+      StoreList
+    },
+    data() {
+      return {
+        stores: []
+      };
+    },
+
+    beforeMount() {
+      navigator.geolocation.getCurrentPosition((position) => {
+        axios.get('https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json', {
+               params: {
+                 lat: position.coords.latitude,
+                 lng: position.coords.longitude,
+                 m: 1000
+               }
+             })
+             .then((response) => {
+               this.stores = response.data.stores;
+             });
+      }, () => {}, {
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 27000
+      });
+    }
+  };
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  #app {
+    padding: 15px;
+    font-family: sans-serif;
+  }
 </style>
