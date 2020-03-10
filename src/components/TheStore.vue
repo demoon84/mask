@@ -11,8 +11,10 @@
           <div>{{store.name}}</div>
           <div>{{store.addr}}</div>
           <div v-if="getKoTime(store.stock_at)">{{getKoTime(store.stock_at)}}</div>
-          <el-button class="store__view-map" type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
-          <el-button class="store__find-load" type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+          <el-button-group class="store__btn-group">
+            <el-button class="store__btn-find-load" type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+            <el-button class="store__btn-view-map" type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
+          </el-button-group>
         </li>
       </template>
     </ul>
@@ -107,17 +109,17 @@
       }
     }
 
-    &__view-map {
+    &__btn-group {
       position: absolute;
       top: 5px;
       right: 5px;
+    }
+
+    &__btn-view-map {
       width: 80px;
     }
 
-    &__find-load {
-      position: absolute;
-      top: 37px;
-      right: 5px;
+    &__btn-find-load {
       width: 80px;
     }
 
