@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <StoreList :stores="stores" />
+    <Store :stores="stores" />
   </div>
 </template>
 
 <script>
   import axios from 'axios';
-  import StoreList from './components/StoreList';
+  import Store from './components/TheStore';
 
   export default {
     name: 'App',
 
     components: {
-      StoreList
+      Store
     },
     data() {
       return {

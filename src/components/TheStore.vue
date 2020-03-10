@@ -1,12 +1,17 @@
 <template>
-  <div class="store-list">
-    <ul>
+  <div :class="['store', {'store--map-view':viewMap}]">
+    <div :class="['store__map', {'store__map--active':viewMap}]">
+      <div id="map" style="width: 100%; height: 100%"></div>
+    </div>
+
+    <ul :class="['store__list', {'store__list--active':viewMap}]">
       <template v-for="store in stores">
         <li :key="store.code">
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
           <div>{{store.name}}</div>
           <div>{{store.addr}}</div>
           <div v-if="getKoTime(store.stock_at)">{{getKoTime(store.stock_at)}}</div>
+          <el-button class="store__view-map" type="success" size="mini" @click="handleFind(store.name, store.lat, store.lng)">위치보기</el-button>
         </li>
       </template>
     </ul>
@@ -23,7 +28,32 @@
       'stores'
     ],
 
+    data() {
+      return {
+        viewMap: false
+      };
+    },
+
     methods: {
+      handleFind(name, lat, lng) {
+        this.viewMap = true;
+
+        const mapContainer = document.getElementById('map'), // 지도를 표시할 div
+            mapOption = {
+              center: new window.kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
+              level: 3 // 지도의 확대 레벨
+            };
+
+        const map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        const marker = new window.kakao.maps.Marker();
+        window.kakao.maps.event.addListener(map, 'tilesloaded', displayMarker);
+
+        function displayMarker() {
+          marker.setPosition(map.getCenter());
+          marker.setMap(map);
+        }
+      },
+
       getsStatNumber(stat) {
         if (stat == 'plenty') {
           return '100개 이상';
@@ -48,6 +78,7 @@
         return moment(time).format('LLLL');
       }
     },
+
     mounted() {
       moment.locale('ko');
     }
@@ -55,16 +86,45 @@
 </script>
 
 <style lang="scss" scoped>
-  .store-list {
-    ul {
+  .store {
+    &__map {
+      top: 0;
+      left: 0;
+      right: 0;
+      position: fixed;
+      height: 300px;
+      overflow: hidden;
+      z-index: 1;
+      opacity: 0;
+
+      &--active {
+        opacity: 1;
+      }
+    }
+
+    &__view-map {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+    }
+
+    &__list {
+      position: relative;
+      z-index: 2;
       list-style: none;
       margin: 0;
       padding: 0;
+
+      &--active {
+        margin-top: 300px;
+        z-index: 0;
+      }
     }
 
     li {
       font-size: 12px;
       border: 1px solid #ccc;
+      position: relative;
       list-style: none;
       margin: 15px 0 0 0;
       padding: 15px;
