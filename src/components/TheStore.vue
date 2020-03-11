@@ -9,9 +9,11 @@
       <template v-for="store in stores">
         <li :key="store.code">
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
-          <div>{{store.name}} <span class="store__distance">({{store.distance}}미터)</span></div>
+          <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
-          <div v-if="getKoTime(store.stock_at)">{{getKoTime(store.stock_at)}}</div>
+
+          <div v-if="getKoTime(store.stock_at)" class="store__input-time">입고: {{getKoTime(store.stock_at)}}</div>
+          <div v-if="getKoTime(store.stock_at)">데이터: {{getKoTime(store.created_at)}}</div>
           <el-button-group class="store__btn-group">
             <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
             <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
@@ -120,6 +122,7 @@
 
     &__distance {
       font-weight: bold;
+      color: #909399;
     }
 
     &__btn-group {
@@ -133,6 +136,12 @@
       top: 250px;
       right: 15px;
       z-index: 2;
+    }
+
+    &__input-time {
+      border-top: 1px dotted #c3c3c3;
+      margin-top: 10px;
+      padding-top: 10px;
     }
 
     &__list {
