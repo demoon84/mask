@@ -6,7 +6,52 @@
     </div>
 
     <ul :class="['store__list', {'store__list--active':viewMap}]">
-      <template v-for="store in stores">
+      <template v-for="store in stores.plenty">
+        <li :key="store.code">
+          <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
+          <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
+          <div>{{store.addr}}</div>
+
+          <div v-if="getKoTime(store.stock_at)" class="store__input-time">입고: {{getKoTime(store.stock_at)}}</div>
+          <div v-if="getKoTime(store.stock_at)">데이터: {{getKoTime(store.created_at)}}</div>
+          <el-button-group class="store__btn-group">
+            <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+            <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
+          </el-button-group>
+        </li>
+      </template>
+
+      <template v-for="store in stores.some">
+        <li :key="store.code">
+          <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
+          <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
+          <div>{{store.addr}}</div>
+
+          <div v-if="getKoTime(store.stock_at)" class="store__input-time">입고: {{getKoTime(store.stock_at)}}</div>
+          <div v-if="getKoTime(store.stock_at)">데이터: {{getKoTime(store.created_at)}}</div>
+          <el-button-group class="store__btn-group">
+            <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+            <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
+          </el-button-group>
+        </li>
+      </template>
+
+      <template v-for="store in stores.few">
+        <li :key="store.code">
+          <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
+          <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
+          <div>{{store.addr}}</div>
+
+          <div v-if="getKoTime(store.stock_at)" class="store__input-time">입고: {{getKoTime(store.stock_at)}}</div>
+          <div v-if="getKoTime(store.stock_at)">데이터: {{getKoTime(store.created_at)}}</div>
+          <el-button-group class="store__btn-group">
+            <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+            <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
+          </el-button-group>
+        </li>
+      </template>
+
+      <template v-for="store in stores.empty">
         <li :key="store.code">
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
@@ -57,11 +102,6 @@
         });
 
         marker.setMap(map);
-
-        window.kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-          console.log(mouseEvent.latLng);
-
-        });
       },
 
       handleCloseMap() {
@@ -85,7 +125,6 @@
         if (stat === 'empty') {
           return '1개 이하';
         }
-        return '없음';
       },
 
       getKoTime(time) {

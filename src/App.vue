@@ -18,7 +18,12 @@
     },
     data() {
       return {
-        stores: [],
+        stores: {
+          plenty: [],
+          some: [],
+          few: [],
+          empty: []
+        },
         loading: null
       };
     },
@@ -64,12 +69,18 @@
              })
              .then((response) => {
                let data = response.data.stores;
-
-               data.forEach((d) => {
+               _.forEach(data, (d) => {
                  d.distance = Math.floor(this.distance(d.lat, d.lng, position.coords.latitude, position.coords.longitude, 'K') * 1000);
                });
 
-               this.stores = _.sortBy(data, [function(o) { return o.distance; }]);
+               let sortData = _.sortBy(data, [function(o) { return o.distance; }]);
+
+               _.forEach(sortData, (d) => {
+                 if (d.remain_stat) {
+                   this.stores[d.remain_stat].push(d);
+                 }
+               });
+
                this.loading.close();
              });
       }, () => {}, {
