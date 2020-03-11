@@ -9,7 +9,7 @@
       <template v-for="store in stores">
         <li :key="store.code">
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
-          <div>{{store.name}}</div>
+          <div>{{store.name}} <span class="store__distance">({{store.distance}}미터)</span></div>
           <div>{{store.addr}}</div>
           <div v-if="getKoTime(store.stock_at)">{{getKoTime(store.stock_at)}}</div>
           <el-button-group class="store__btn-group">
@@ -28,9 +28,7 @@
   export default {
     name: 'StoreList',
 
-    props: [
-      'stores'
-    ],
+    props: ['stores', 'position'],
 
     data() {
       return {
@@ -42,22 +40,26 @@
       handleViewMap(name, lat, lng) {
         this.viewMap = true;
 
-        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        let mapContainer = document.getElementById('map'), // 지도를 표시할 div
             mapOption = {
               center: new window.kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
               level: 3 // 지도의 확대 레벨
             };
 
-        var map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        let map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-        var markerPosition = new window.kakao.maps.LatLng(lat, lng);
+        let markerPosition = new window.kakao.maps.LatLng(lat, lng);
 
-        var marker = new window.kakao.maps.Marker({
+        let marker = new window.kakao.maps.Marker({
           position: markerPosition
         });
 
-// 마커가 지도 위에 표시되도록 설정합니다
         marker.setMap(map);
+
+        window.kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+          console.log(mouseEvent.latLng);
+
+        });
       },
 
       handleCloseMap() {
@@ -114,6 +116,10 @@
       &--active {
         opacity: 1;
       }
+    }
+
+    &__distance {
+      font-weight: bold;
     }
 
     &__btn-group {
