@@ -28,7 +28,7 @@
   export default {
     name: 'StoreList',
 
-    props: ['stores', 'position'],
+    props: ['stores'],
 
     data() {
       return {
