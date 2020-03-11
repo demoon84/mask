@@ -42,27 +42,32 @@
       handleViewMap(name, lat, lng) {
         this.viewMap = true;
 
-        const mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
             mapOption = {
               center: new window.kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
               level: 3 // 지도의 확대 레벨
             };
 
-        const map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-        const marker = new window.kakao.maps.Marker();
-        window.kakao.maps.event.addListener(map, 'tilesloaded', displayMarker);
+        var map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-        function displayMarker() {
-          marker.setPosition(map.getCenter());
-          marker.setMap(map);
-        }
+        var markerPosition = new window.kakao.maps.LatLng(lat, lng);
+
+        var marker = new window.kakao.maps.Marker({
+          position: markerPosition
+        });
+
+// 마커가 지도 위에 표시되도록 설정합니다
+        marker.setMap(map);
       },
+
       handleCloseMap() {
         this.viewMap = false;
       },
+
       handleFindLoad(name, lat, lng) {
         location.href = `https://map.kakao.com/link/to/${name},${lat},${lng}`;
       },
+
       getsStatNumber(stat) {
         if (stat === 'plenty') {
           return '100개 이상';
@@ -78,6 +83,7 @@
         }
         return '없음';
       },
+
       getKoTime(time) {
         if (!time) {
           return false;
