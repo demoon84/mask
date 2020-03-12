@@ -171,7 +171,6 @@
     }
 
     &__list {
-      position: fixed;
       padding: 15px;
       box-sizing: border-box;
       margin-top: 50vh;
