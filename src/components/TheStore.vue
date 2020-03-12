@@ -15,7 +15,7 @@
           <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
           <el-button-group class="store__btn-group">
             <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-            <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
+            <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
           </el-button-group>
         </li>
       </template>
@@ -29,7 +29,7 @@
           <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
           <el-button-group class="store__btn-group">
             <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-            <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
+            <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
           </el-button-group>
         </li>
       </template>
@@ -43,7 +43,7 @@
           <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
           <el-button-group class="store__btn-group">
             <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-            <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
+            <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
           </el-button-group>
         </li>
       </template>
@@ -56,7 +56,7 @@
           <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
           <el-button-group class="store__btn-group">
             <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-            <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
+            <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
           </el-button-group>
         </li>
       </template>
@@ -65,37 +65,25 @@
 </template>
 
 <script>
+  import _ from 'lodash';
+
   export default {
     name: 'StoreList',
 
-    props: ['stores'],
+    props: ['stores', 'position'],
 
     data() {
       return {
-        viewMap: false
+        viewMap: false,
+        map: null
       };
     },
 
     methods: {
-      handleViewMap(name, lat, lng) {
+      handleViewMap(lat, lng) {
         this.viewMap = true;
 
-        let mapContainer = document.getElementById('map'), // 지도를 표시할 div
-            mapOption = {
-              center: new window.kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
-              level: 3 // 지도의 확대 레벨
-            };
-
-        let map = new window.kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-
-        let markerPosition = new window.kakao.maps.LatLng(lat, lng);
-
-        let marker = new window.kakao.maps.Marker({
-          position: markerPosition
-        });
-
-
-        marker.setMap(map);
+        this.map.panTo(new window.kakao.maps.LatLng(lat, lng));
       },
 
       handleCloseMap() {
@@ -120,6 +108,25 @@
           return '품절';
         }
       }
+    },
+
+    mounted() {
+      this.map = new window.kakao.maps.Map(document.getElementById('map'), {
+        center: new window.kakao.maps.LatLng(this.position.lat, this.position.lng),
+        level: 3
+      });
+
+      _.forEach(this.stores, (storeList) => {
+        _.forEach(storeList, (store) => {
+          let position = new window.kakao.maps.LatLng(store.lat, store.lng);
+
+          new window.kakao.maps.Marker({
+            map: this.map,
+            position: position,
+            image: new window.kakao.maps.MarkerImage(`https://demoon84.github.io/mask/dist/${store.remain_stat}.png`, new window.kakao.maps.Size(16, 22))
+          });
+        });
+      });
     }
   };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Store :stores="stores" />
+    <Store v-if="ready" :stores="stores" :position="position" />
 
     <div class="last-update-time">데이터 업데이트: {{lastUpdateTime}}</div>
   </div>
@@ -28,13 +28,23 @@
           few: [],
           empty: []
         },
-        loading: null
+        loading: null,
+        position: null,
+        ready: false
       };
     },
 
     computed: {
       lastUpdateTime() {
-        return this.stores.plenty[0] ? moment(this.stores.plenty[0].created_at).format('LLLL') : '';
+        if (this.stores.plenty[0]) {
+          return moment(this.stores.plenty[0].created_at).format('LLL');
+        }
+
+        if (this.stores.empty[0]) {
+          return moment(this.stores.empty[0].created_at).format('LLL');
+        }
+
+        return '';
       }
     },
 
@@ -72,6 +82,12 @@
 
     beforeMount() {
       navigator.geolocation.getCurrentPosition((position) => {
+
+        this.position = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
         axios.get('https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json', {
                params: {
                  lat: position.coords.latitude,
@@ -93,7 +109,7 @@
                    d.stock_at = moment(d.stock_at).format('LLLL');
                  }
                });
-
+               this.ready = true;
                this.loading.close();
              });
       }, () => {}, {
