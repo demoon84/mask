@@ -123,6 +123,13 @@
             position: position,
             image: new window.kakao.maps.MarkerImage(`https://demoon84.github.io/mask/dist/${store.remain_stat}.png`, new window.kakao.maps.Size(16, 22))
           });
+
+          new window.kakao.maps.CustomOverlay({
+            map: this.map,
+            position: position,
+            content: `<div style="font-size: 10px; background: rgba(255,255,255,.8);padding: 2px 5px;border-radius: 12px;border: 1px solid #ccc;">${store.name}</div>`,
+            yAnchor: 0
+          });
         });
       });
 
