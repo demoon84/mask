@@ -13,7 +13,8 @@
     "element-ui": "^2.13.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-scrollto": "^2.17.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.2.0",

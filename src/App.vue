@@ -122,6 +122,10 @@
 </script>
 
 <style>
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     margin: 0;
     padding: 0;

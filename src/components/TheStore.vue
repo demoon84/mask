@@ -7,7 +7,7 @@
     <div class="store__list">
       <ul>
         <template v-for="store in stores.plenty">
-          <li class="store__list-item" :key="store.code">
+          <li :class="['store__list-item', {'store__list-item--active': activeItem===store.code}]" :id="`store-${store.code}`" :key="store.code">
             <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
             <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
             <div>{{store.addr}}</div>
@@ -15,13 +15,13 @@
             <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
             <el-button-group class="store__btn-group">
               <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
+              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng, store.code)">위치보기</el-button>
             </el-button-group>
           </li>
         </template>
 
         <template v-for="store in stores.some">
-          <li class="store__list-item" :key="store.code">
+          <li :class="['store__list-item', {'store__list-item--active': activeItem===store.code}]" :id="`store-${store.code}`" :key="store.code">
             <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
             <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
             <div>{{store.addr}}</div>
@@ -29,13 +29,13 @@
             <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
             <el-button-group class="store__btn-group">
               <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
+              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng, store.code)">위치보기</el-button>
             </el-button-group>
           </li>
         </template>
 
         <template v-for="store in stores.few">
-          <li class="store__list-item" :key="store.code">
+          <li :class="['store__list-item', {'store__list-item--active' : activeItem===store.code}]" :id="`store-${store.code}`" :key="store.code">
             <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
             <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
             <div>{{store.addr}}</div>
@@ -43,20 +43,20 @@
             <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
             <el-button-group class="store__btn-group">
               <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
+              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng, store.code)">위치보기</el-button>
             </el-button-group>
           </li>
         </template>
 
         <template v-for="store in stores.empty">
-          <li class="store__list-item sold-out" :key="store.code">
+          <li :class="['store__list-item','sold-out',{'store__list-item--active' : activeItem===store.code}]" :id="`store-${store.code}`" :key="store.code">
             <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
             <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
             <div>{{store.addr}}</div>
             <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
             <el-button-group class="store__btn-group">
               <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
+              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng, store.code)">위치보기</el-button>
             </el-button-group>
           </li>
         </template>
@@ -67,6 +67,7 @@
 
 <script>
   import _ from 'lodash';
+  import VueScrollTo from 'vue-scrollto';
 
   export default {
     name: 'StoreList',
@@ -75,13 +76,15 @@
 
     data() {
       return {
-        map: null
+        map: null,
+        activeItem: ''
       };
     },
 
     methods: {
-      handleViewMap(lat, lng) {
+      handleViewMap(lat, lng, code) {
         this.map.setCenter(new window.kakao.maps.LatLng(lat, lng));
+        this.activeItem = code;
       },
 
       handleFindLoad(name, lat, lng) {
@@ -116,10 +119,20 @@
         _.forEach(storeList, (store) => {
           let position = new window.kakao.maps.LatLng(store.lat, store.lng);
 
-          new window.kakao.maps.Marker({
+          let marker = new window.kakao.maps.Marker({
             map: this.map,
             position: position,
             image: new window.kakao.maps.MarkerImage(`https://demoon84.github.io/mask/dist/${store.remain_stat}.png`, new window.kakao.maps.Size(16, 22))
+          });
+
+          marker.code = store.code;
+
+          window.kakao.maps.event.addListener(marker, 'click', () => {
+            VueScrollTo.scrollTo(`#store-${marker.code}`, 500, {
+              offset: -(window.innerHeight / 2) - 10
+            });
+
+            this.activeItem = marker.code;
           });
 
           new window.kakao.maps.CustomOverlay({
@@ -140,6 +153,8 @@
       else if (this.stores.few[0]) {
         firstStore = this.stores.few[0];
       }
+
+      this.activeItem = firstStore.code;
 
       this.map.setCenter(new window.kakao.maps.LatLng(firstStore.lat, firstStore.lng));
     }
@@ -196,6 +211,10 @@
       &:first-child {
         margin-top: 0;
       }
+
+      &--active {
+        border: 1px solid #333;
+      }
     }
 
     .stat {
@@ -222,7 +241,7 @@
     }
 
     .sold-out {
-      opacity: .5;
+      opacity: .8;
     }
   }
 </style>
