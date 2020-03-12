@@ -1,13 +1,12 @@
 <template>
-  <div :class="['store', {'store--map-view':viewMap}]">
-    <div :class="['store__map', {'store__map--active':viewMap}]">
+  <div :class="['store']">
+    <div :class="['store__map']">
       <div id="map" style="width: 100%; height: 100%"></div>
-      <el-button class="store__btn-map-close" icon="el-icon-close" type="danger" circle @click="handleCloseMap"></el-button>
     </div>
 
-    <ul :class="['store__list', {'store__list--active':viewMap}]">
+    <ul :class="['store__list']">
       <template v-for="store in stores.plenty">
-        <li :key="store.code">
+        <li class="store__list-item" :key="store.code">
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
@@ -21,7 +20,7 @@
       </template>
 
       <template v-for="store in stores.some">
-        <li :key="store.code">
+        <li class="store__list-item" :key="store.code">
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
@@ -35,7 +34,7 @@
       </template>
 
       <template v-for="store in stores.few">
-        <li :key="store.code">
+        <li class="store__list-item" :key="store.code">
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
@@ -49,7 +48,7 @@
       </template>
 
       <template v-for="store in stores.empty">
-        <li :key="store.code" class="sold-out">
+        <li class="store__list-item sold-out" :key="store.code">
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
@@ -74,20 +73,13 @@
 
     data() {
       return {
-        viewMap: false,
         map: null
       };
     },
 
     methods: {
       handleViewMap(lat, lng) {
-        this.viewMap = true;
-
         this.map.panTo(new window.kakao.maps.LatLng(lat, lng));
-      },
-
-      handleCloseMap() {
-        this.viewMap = false;
       },
 
       handleFindLoad(name, lat, lng) {
@@ -111,13 +103,17 @@
     },
 
     mounted() {
+      let firstStore;
+
       this.map = new window.kakao.maps.Map(document.getElementById('map'), {
         center: new window.kakao.maps.LatLng(this.position.lat, this.position.lng),
         level: 3
       });
 
       _.forEach(this.stores, (storeList) => {
+
         _.forEach(storeList, (store) => {
+
           let position = new window.kakao.maps.LatLng(store.lat, store.lng);
 
           new window.kakao.maps.Marker({
@@ -127,6 +123,20 @@
           });
         });
       });
+
+      if (this.stores.plenty[0]) {
+        firstStore = this.stores.plenty[0];
+      }
+
+      if (this.stores.some[0]) {
+        firstStore = this.stores.some[0];
+      }
+
+      if (this.stores.few[0]) {
+        firstStore = this.stores.few[0];
+      }
+
+      this.map.panTo(new window.kakao.maps.LatLng(firstStore.lat, firstStore.lng));
     }
   };
 </script>
@@ -140,12 +150,7 @@
       position: fixed;
       height: 300px;
       overflow: hidden;
-      z-index: 1;
-      opacity: 0;
-
-      &--active {
-        opacity: 1;
-      }
+      z-index: 2;
     }
 
     &__distance {
@@ -159,13 +164,6 @@
       right: 15px;
     }
 
-    &__btn-map-close {
-      position: fixed;
-      top: 250px;
-      right: 15px;
-      z-index: 2;
-    }
-
     &__input-time {
       border-top: 1px dotted #c3c3c3;
       margin-top: 5px;
@@ -174,18 +172,13 @@
 
     &__list {
       position: relative;
-      z-index: 2;
+      z-index: 1;
       list-style: none;
-      margin: 0;
       padding: 0;
-
-      &--active {
-        margin-top: 300px;
-        z-index: 0;
-      }
+      margin: 300px 0 0 0;
     }
 
-    li {
+    &__list-item {
       font-size: 12px;
       border: 1px solid #ccc;
       position: relative;
