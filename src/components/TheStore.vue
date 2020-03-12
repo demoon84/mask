@@ -129,7 +129,7 @@
 
           window.kakao.maps.event.addListener(marker, 'click', () => {
             VueScrollTo.scrollTo(`#store-${marker.code}`, 500, {
-              offset: -(window.innerHeight / 2) - 10
+              offset: -(window.innerHeight / 2) - 70
             });
 
             this.activeItem = marker.code;
