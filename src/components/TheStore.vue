@@ -1,65 +1,67 @@
 <template>
-  <div :class="['store']">
-    <div :class="['store__map']">
+  <div class="store">
+    <div class="store__map">
       <div id="map" style="width: 100%; height: 100%"></div>
     </div>
 
-    <ul :class="['store__list']">
-      <template v-for="store in stores.plenty">
-        <li class="store__list-item" :key="store.code">
-          <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
-          <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
-          <div>{{store.addr}}</div>
+    <div class="store__list">
+      <ul>
+        <template v-for="store in stores.plenty">
+          <li class="store__list-item" :key="store.code">
+            <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
+            <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
+            <div>{{store.addr}}</div>
 
-          <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
-          <el-button-group class="store__btn-group">
-            <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-            <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
-          </el-button-group>
-        </li>
-      </template>
+            <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
+            <el-button-group class="store__btn-group">
+              <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
+            </el-button-group>
+          </li>
+        </template>
 
-      <template v-for="store in stores.some">
-        <li class="store__list-item" :key="store.code">
-          <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
-          <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
-          <div>{{store.addr}}</div>
+        <template v-for="store in stores.some">
+          <li class="store__list-item" :key="store.code">
+            <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
+            <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
+            <div>{{store.addr}}</div>
 
-          <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
-          <el-button-group class="store__btn-group">
-            <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-            <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
-          </el-button-group>
-        </li>
-      </template>
+            <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
+            <el-button-group class="store__btn-group">
+              <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
+            </el-button-group>
+          </li>
+        </template>
 
-      <template v-for="store in stores.few">
-        <li class="store__list-item" :key="store.code">
-          <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
-          <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
-          <div>{{store.addr}}</div>
+        <template v-for="store in stores.few">
+          <li class="store__list-item" :key="store.code">
+            <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
+            <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
+            <div>{{store.addr}}</div>
 
-          <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
-          <el-button-group class="store__btn-group">
-            <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-            <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
-          </el-button-group>
-        </li>
-      </template>
+            <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
+            <el-button-group class="store__btn-group">
+              <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
+            </el-button-group>
+          </li>
+        </template>
 
-      <template v-for="store in stores.empty">
-        <li class="store__list-item sold-out" :key="store.code">
-          <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
-          <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
-          <div>{{store.addr}}</div>
-          <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
-          <el-button-group class="store__btn-group">
-            <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-            <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
-          </el-button-group>
-        </li>
-      </template>
-    </ul>
+        <template v-for="store in stores.empty">
+          <li class="store__list-item sold-out" :key="store.code">
+            <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
+            <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
+            <div>{{store.addr}}</div>
+            <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
+            <el-button-group class="store__btn-group">
+              <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng)">위치보기</el-button>
+            </el-button-group>
+          </li>
+        </template>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -169,15 +171,10 @@
     }
 
     &__list {
-      left: 0;
-      right: 0;
-      bottom: 0;
       position: fixed;
-      list-style: none;
       padding: 15px;
-      margin: 0;
       box-sizing: border-box;
-      height: 50vh;
+      margin-top: 50vh;
       overflow: auto;
     }
 
