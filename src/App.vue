@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Store :stores="stores" />
+
     <div class="last-update-time">데이터 업데이트: {{lastUpdateTime}}</div>
   </div>
 </template>
