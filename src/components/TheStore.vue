@@ -113,9 +113,7 @@
       });
 
       _.forEach(this.stores, (storeList) => {
-
         _.forEach(storeList, (store) => {
-
           let position = new window.kakao.maps.LatLng(store.lat, store.lng);
 
           new window.kakao.maps.Marker({
@@ -127,7 +125,7 @@
           new window.kakao.maps.CustomOverlay({
             map: this.map,
             position: position,
-            content: `<div style="font-size: 10px; background: rgba(255,255,255,.8);padding: 2px 5px;border-radius: 12px;border: 1px solid #ccc;">${store.name}</div>`,
+            content: `<div style="font-size: 10px; background: rgba(255,255,255,.7);padding: 2px 5px;border-radius: 12px;border: 1px solid #ccc;">${store.name}</div>`,
             yAnchor: 0
           });
         });
