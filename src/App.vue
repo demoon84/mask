@@ -90,8 +90,7 @@
                _.forEach(sortData, (d) => {
                  if (d.remain_stat) {
                    this.stores[d.remain_stat].push(d);
-
-                   d.stock_at = moment(this.stores[d.stock_at]).format('LLLL');
+                   d.stock_at = moment(d.stock_at).format('LLLL');
                  }
                });
 
