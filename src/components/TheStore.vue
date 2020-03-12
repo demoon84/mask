@@ -12,8 +12,7 @@
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
 
-          <div v-if="getKoTime(store.stock_at)" class="store__input-time">입고: {{getKoTime(store.stock_at)}}</div>
-          <div v-if="getKoTime(store.stock_at)">데이터: {{getKoTime(store.created_at)}}</div>
+          <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
           <el-button-group class="store__btn-group">
             <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
             <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
@@ -27,8 +26,7 @@
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
 
-          <div v-if="getKoTime(store.stock_at)" class="store__input-time">입고: {{getKoTime(store.stock_at)}}</div>
-          <div v-if="getKoTime(store.stock_at)">데이터: {{getKoTime(store.created_at)}}</div>
+          <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
           <el-button-group class="store__btn-group">
             <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
             <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
@@ -42,8 +40,7 @@
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
 
-          <div v-if="getKoTime(store.stock_at)" class="store__input-time">입고: {{getKoTime(store.stock_at)}}</div>
-          <div v-if="getKoTime(store.stock_at)">데이터: {{getKoTime(store.created_at)}}</div>
+          <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
           <el-button-group class="store__btn-group">
             <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
             <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
@@ -56,8 +53,7 @@
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
-          <div v-if="getKoTime(store.stock_at)" class="store__input-time">입고: {{getKoTime(store.stock_at)}}</div>
-          <div v-if="getKoTime(store.stock_at)">데이터: {{getKoTime(store.created_at)}}</div>
+          <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
           <el-button-group class="store__btn-group">
             <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
             <el-button type="success" size="mini" @click="handleViewMap(store.name, store.lat, store.lng)">위치보기</el-button>
@@ -69,8 +65,6 @@
 </template>
 
 <script>
-  import moment from 'moment';
-
   export default {
     name: 'StoreList',
 
@@ -124,19 +118,7 @@
         if (stat === 'empty') {
           return '품절';
         }
-      },
-
-      getKoTime(time) {
-        if (!time) {
-          return false;
-        }
-
-        return moment(time).format('LLLL');
       }
-    },
-
-    mounted() {
-      moment.locale('ko');
     }
   };
 </script>
@@ -160,7 +142,7 @@
 
     &__distance {
       font-weight: bold;
-      color: #909399;
+      color: #333;
     }
 
     &__btn-group {
@@ -178,8 +160,8 @@
 
     &__input-time {
       border-top: 1px dotted #c3c3c3;
-      margin-top: 10px;
-      padding-top: 10px;
+      margin-top: 5px;
+      padding-top: 5px;
     }
 
     &__list {
@@ -234,7 +216,7 @@
       color: #909399;
     }
 
-    .sold-out{
+    .sold-out {
       opacity: .5;
     }
   }

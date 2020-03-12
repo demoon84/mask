@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Store :stores="stores" />
+    <div class="last-update-time">데이터 업데이트: {{lastUpdateTime}}</div>
   </div>
 </template>
 
@@ -9,6 +10,7 @@
   import Store from './components/TheStore';
   import {Loading} from 'element-ui';
   import _ from 'lodash';
+  import moment from 'moment';
 
   export default {
     name: 'App',
@@ -16,6 +18,7 @@
     components: {
       Store
     },
+
     data() {
       return {
         stores: {
@@ -26,6 +29,12 @@
         },
         loading: null
       };
+    },
+
+    computed: {
+      lastUpdateTime() {
+        return this.stores.plenty[0] ? moment(this.stores.plenty[0].created_at).format('LLLL') : '';
+      }
     },
 
     methods: {
@@ -56,6 +65,8 @@
 
     created() {
       this.loading = Loading.service({fullscreen: true});
+
+      moment.locale('ko');
     },
 
     beforeMount() {
@@ -78,6 +89,8 @@
                _.forEach(sortData, (d) => {
                  if (d.remain_stat) {
                    this.stores[d.remain_stat].push(d);
+
+                   d.stock_at = moment(this.stores[d.stock_at]).format('LLLL');
                  }
                });
 
@@ -101,5 +114,18 @@
   #app {
     padding: 15px;
     font-family: sans-serif;
+  }
+
+  .last-update-time {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 10px;
+    z-index: 10;
+    color: #909399;
   }
 </style>
