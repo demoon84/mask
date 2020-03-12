@@ -134,7 +134,7 @@
 
   .last-update-time {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
     text-align: center;
@@ -142,6 +142,6 @@
     background: rgba(255, 255, 255, 0.85);
     padding: 10px;
     z-index: 10;
-    color: #909399;
+    color: #000;
   }
 </style>

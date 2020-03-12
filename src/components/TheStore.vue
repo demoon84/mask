@@ -79,7 +79,7 @@
 
     methods: {
       handleViewMap(lat, lng) {
-        this.map.panTo(new window.kakao.maps.LatLng(lat, lng));
+        this.map.setCenter(new window.kakao.maps.LatLng(lat, lng));
       },
 
       handleFindLoad(name, lat, lng) {
@@ -127,16 +127,14 @@
       if (this.stores.plenty[0]) {
         firstStore = this.stores.plenty[0];
       }
-
-      if (this.stores.some[0]) {
+      else if (this.stores.some[0]) {
         firstStore = this.stores.some[0];
       }
-
-      if (this.stores.few[0]) {
+      else if (this.stores.few[0]) {
         firstStore = this.stores.few[0];
       }
 
-      this.map.panTo(new window.kakao.maps.LatLng(firstStore.lat, firstStore.lng));
+      this.map.setCenter(new window.kakao.maps.LatLng(firstStore.lat, firstStore.lng));
     }
   };
 </script>
@@ -148,7 +146,7 @@
       left: 0;
       right: 0;
       position: fixed;
-      height: 300px;
+      height: 50vh;
       overflow: hidden;
       z-index: 2;
     }
@@ -171,11 +169,16 @@
     }
 
     &__list {
-      position: relative;
-      z-index: 1;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      position: fixed;
       list-style: none;
-      padding: 0;
-      margin: 300px 0 0 0;
+      padding: 15px;
+      margin: 0;
+      box-sizing: border-box;
+      height: 50vh;
+      overflow: auto;
     }
 
     &__list-item {
@@ -183,8 +186,8 @@
       border: 1px solid #ccc;
       position: relative;
       list-style: none;
-      margin: 15px 0 0 0;
-      padding: 15px;
+      margin: 10px 0 0 0;
+      padding: 10px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
       color: #909399;
       line-height: 1.5;
