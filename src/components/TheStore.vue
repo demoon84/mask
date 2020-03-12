@@ -52,11 +52,10 @@
       </template>
 
       <template v-for="store in stores.empty">
-        <li :key="store.code">
+        <li :key="store.code" class="sold-out">
           <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
           <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
           <div>{{store.addr}}</div>
-
           <div v-if="getKoTime(store.stock_at)" class="store__input-time">입고: {{getKoTime(store.stock_at)}}</div>
           <div v-if="getKoTime(store.stock_at)">데이터: {{getKoTime(store.created_at)}}</div>
           <el-button-group class="store__btn-group">
@@ -123,7 +122,7 @@
           return '2개~30개';
         }
         if (stat === 'empty') {
-          return '1개 이하';
+          return '품절';
         }
       },
 
@@ -233,6 +232,10 @@
 
     .empty {
       color: #909399;
+    }
+
+    .sold-out{
+      opacity: .5;
     }
   }
 </style>
