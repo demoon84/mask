@@ -92,7 +92,7 @@
                params: {
                  lat: position.coords.latitude,
                  lng: position.coords.longitude,
-                 m: 1000
+                 m: 1500
                }
              })
              .then((response) => {
@@ -127,7 +127,7 @@
     padding: 0;
   }
 
-  ul,li{
+  ul, li {
     margin: 0;
     padding: 0;
     list-style: none;
