@@ -26,7 +26,8 @@
           plenty: [],
           some: [],
           few: [],
-          empty: []
+          empty: [],
+          break: []
         },
         loading: null,
         position: null,
@@ -104,9 +105,9 @@
                let sortData = _.sortBy(data, [function(o) { return o.distance; }]);
 
                _.forEach(sortData, (d) => {
-                 if (d.remain_stat && d.remain_stat !== 'break') {
-                   this.stores[d.remain_stat].push(d);
+                 if (d.remain_stat) {
                    d.stock_at = moment(d.stock_at).format('LLLL');
+                   this.stores[d.remain_stat].push(d);
                  }
                });
                this.ready = true;

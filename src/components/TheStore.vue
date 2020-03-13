@@ -48,6 +48,19 @@
           </li>
         </template>
 
+        <template v-for="store in stores.break">
+          <li :class="['store__list-item','sold-out',{'store__list-item--active' : activeItem===store.code}]" :id="`store-${store.code}`" :key="store.code">
+            <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
+            <div>{{store.name}} | <span class="store__distance">{{store.distance}}미터</span></div>
+            <div>{{store.addr}}</div>
+            <div v-if="store.stock_at" class="store__input-time">입고시간: {{store.stock_at}}</div>
+            <el-button-group class="store__btn-group">
+              <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
+              <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng, store.code)">위치보기</el-button>
+            </el-button-group>
+          </li>
+        </template>
+
         <template v-for="store in stores.empty">
           <li :class="['store__list-item','sold-out',{'store__list-item--active' : activeItem===store.code}]" :id="`store-${store.code}`" :key="store.code">
             <div :class="[store.remain_stat, 'stat']">{{getsStatNumber(store.remain_stat)}}</div>
@@ -96,13 +109,16 @@
           return '100개 이상';
         }
         if (stat === 'some') {
-          return '30개~100개';
+          return '100개 미만';
         }
         if (stat === 'few') {
-          return '2개~30개';
+          return '30개 미만';
         }
         if (stat === 'empty') {
           return '품절';
+        }
+        if (stat === 'break') {
+          return '판매중지';
         }
       }
     },
@@ -237,6 +253,10 @@
     }
 
     .empty {
+      color: #909399;
+    }
+
+    .break {
       color: #909399;
     }
 
