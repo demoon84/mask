@@ -1,27 +1,63 @@
 <template>
   <div id="app">
-    <Store v-if="ready" :stores="stores" :position="position" />
+    <StoreMap v-if="ready"
+              :stores="stores"
+              :position="position"
+              :activeMap="activeMap"
+              @updateActiveStore="handleUpdateActiveStore"
+              @updateStoreMapCenter="handleUpdateStoreMapCenter" />
 
-    <div class="last-update-time">데이터 업데이트: {{lastUpdateTime}}</div>
+    <DataInfo :time="time"
+              :canFind="canFind"
+              :activeMap="activeMap"
+              @updateFindData="handleUpdateFindData" />
+
+    <StoreList :stores="stores"
+               :activeMap="activeMap"
+               :activeStore="activeStore"
+               @updateCenterPosition="handleUpdateCenterPosition" />
+
+    <el-button v-if="activeMap"
+               type="danger"
+               icon="el-icon-close"
+               circle
+               class="store-map-close"
+               @click="handleCloseMap"></el-button>
   </div>
 </template>
 
 <script>
-  import axios from 'axios';
-  import Store from './components/TheStore';
   import {Loading} from 'element-ui';
   import _ from 'lodash';
   import moment from 'moment';
+  import store from './store';
+  import VueScrollTo from 'vue-scrollto';
+
+  import DataInfo from './components/DataInfo';
+  import StoreMap from './components/StoreMap';
+  import StoreList from './components/StoreList';
 
   export default {
     name: 'App',
 
     components: {
-      Store
+      StoreMap,
+      DataInfo,
+      StoreList
     },
 
     data() {
       return {
+        loading: null,
+
+        ready: false,
+
+        activeStore: '',
+
+        canFind: false,
+
+        activeMap: false,
+
         stores: {
           plenty: [],
           some: [],
@@ -29,23 +65,42 @@
           empty: [],
           break: []
         },
-        loading: null,
-        position: null,
-        ready: false
+
+        position: {
+          lat: 0,
+          lng: 0
+        },
+
+        mapCenter: {
+          lat: 0,
+          lng: 0
+        }
       };
     },
 
     computed: {
-      lastUpdateTime() {
+      time() {
         if (this.stores.plenty[0]) {
-          return moment(this.stores.plenty[0].created_at).format('LLL');
+          return this.stores.plenty[0];
+        }
+
+        if (this.stores.some[0]) {
+          return this.stores.some[0];
+        }
+
+        if (this.stores.few[0]) {
+          return this.stores.few[0];
         }
 
         if (this.stores.empty[0]) {
-          return moment(this.stores.empty[0].created_at).format('LLL');
+          return this.stores.empty[0];
         }
 
-        return '';
+        if (this.stores.break[0]) {
+          return this.stores.break[0];
+        }
+
+        return false;
       }
     },
 
@@ -72,51 +127,94 @@
           if (unit === 'N') { dist = dist * 0.8684; }
           return dist;
         }
+      },
+
+      handleCloseMap() {
+        this.activeMap = false;
+        this.activeStore = false;
+      },
+
+      handleUpdateFindData() {
+        this.loading = Loading.service({
+          fullscreen: true,
+          background: 'rgba(0, 0, 0, 0.9)'
+        });
+        this.getStoreList(this.mapCenter.lat, this.mapCenter.lng);
+      },
+
+      handleUpdateCenterPosition(store) {
+        this.position = {
+          lat: store.lat,
+          lng: store.lng
+        };
+        this.mapCenter = this.position;
+        this.activeMap = true;
+        this.activeStore = store.code;
+
+        this.$nextTick(() => {
+          VueScrollTo.scrollTo(`#store-${store.code}`, {
+            duration: 500,
+            offset: -(window.innerHeight / 2) - 70
+          });
+        });
+      },
+
+      handleUpdateActiveStore(storeCode) {
+        this.activeStore = storeCode;
+      },
+
+      handleUpdateStoreMapCenter(position) {
+        this.mapCenter = position;
+        this.canFind = true;
+      },
+
+      async getStoreList(lat, lng) {
+        this.canFind = false;
+
+        this.stores = {
+          plenty: [],
+          some: [],
+          few: [],
+          empty: [],
+          break: []
+        };
+
+        let data = (await store(lat, lng)).data.stores;
+
+        _.forEach(data, (d) => {
+          d.distance = Math.floor(this.distance(d.lat, d.lng, lat, lng, 'K') * 1000);
+        });
+
+        let sortData = _.sortBy(data, [function(o) { return o.distance; }]);
+
+        _.forEach(sortData, (d) => {
+          if (d.remain_stat) {
+            d.stock_at = moment(d.stock_at).format('LLLL');
+            this.stores[d.remain_stat].push(d);
+          }
+        });
+
+        this.ready = true;
+
+        setTimeout(() => {
+          this.loading.close();
+        }, 500);
       }
     },
 
     created() {
-      this.loading = Loading.service({fullscreen: true});
+      this.loading = Loading.service({
+        fullscreen: true,
+        background: 'rgba(0, 0, 0, 0.9)'
+      });
 
-      moment.locale('ko');
-    },
-
-    beforeMount() {
       navigator.geolocation.getCurrentPosition((position) => {
-
         this.position = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
 
-        axios.get('https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json', {
-               params: {
-                 lat: position.coords.latitude,
-                 lng: position.coords.longitude,
-                 m: 1500
-               }
-             })
-             .then((response) => {
-               let data = response.data.stores;
-               _.forEach(data, (d) => {
-                 d.distance = Math.floor(this.distance(d.lat, d.lng, position.coords.latitude, position.coords.longitude, 'K') * 1000);
-               });
-
-               let sortData = _.sortBy(data, [function(o) { return o.distance; }]);
-
-               _.forEach(sortData, (d) => {
-                 if (d.remain_stat) {
-                   d.stock_at = moment(d.stock_at).format('LLLL');
-                   this.stores[d.remain_stat].push(d);
-                 }
-               });
-               this.ready = true;
-               this.loading.close();
-             });
-      }, () => {}, {
-        enableHighAccuracy: true,
-        maximumAge: 30000,
-        timeout: 27000
+        this.getStoreList(position.coords.latitude, position.coords.longitude);
       });
     }
   };
@@ -142,16 +240,13 @@
     font-family: sans-serif;
   }
 
-  .last-update-time {
+  .store-map-close {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 12px;
-    background: rgba(255, 255, 255, 0.85);
-    padding: 10px;
-    z-index: 10;
-    color: #000;
+    top: 50vh;
+    left: 50%;
+    transform: translateX(-50%) translateY(-55px);
+    z-index: 3;
+    opacity: 0.9;
+    -webkit-tap-highlight-color: transparent;
   }
 </style>
