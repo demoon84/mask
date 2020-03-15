@@ -67,10 +67,13 @@
 
             window.kakao.maps.event.addListener(marker, 'click', () => {
               this.$emit('updateActiveStore', marker.code);
+              this.map.panTo(marker.getPosition());
 
-              VueScrollTo.scrollTo(`#store-${marker.code}`, {
-                duration: 500,
-                offset: -(window.innerHeight / 2) - 70
+              this.$nextTick(() => {
+                VueScrollTo.scrollTo(`#store-${marker.code}`, {
+                  duration: 500,
+                  offset: -(window.innerHeight / 2) - 70
+                });
               });
             });
 
