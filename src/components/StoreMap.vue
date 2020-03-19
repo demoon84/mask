@@ -41,16 +41,17 @@
         _.forEach(this.markerList, (marker) => {
           marker.setMap(null);
         });
+
         _.forEach(this.overlayList, (overlay) => {
           overlay.setMap(null);
         });
-
-        this.markerList = [];
-        this.overlayList = [];
       },
 
       addMarker: _.debounce(function() {
         this.removeMarker();
+
+        this.markerList = [];
+        this.overlayList = [];
 
         _.forEach(this.stores, (storeList) => {
           _.forEach(storeList, (store) => {
