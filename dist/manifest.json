@@ -28,7 +28,7 @@
   }],
   "start_url": "/mask/dist/index.html",
   "display": "standalone",
-  "background_color": "#67C23A",
-  "theme_color": "#67C23A",
-  "orientation": "portrait"
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary"
 }
