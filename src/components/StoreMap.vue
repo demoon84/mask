@@ -31,8 +31,12 @@
         deep: true
       },
 
-      stores() {
-        this.addMarker();
+      stores: {
+        handler() {
+          this.removeMarker();
+          this.addMarker();
+        },
+        deep: true
       }
     },
 
@@ -41,20 +45,18 @@
         _.forEach(this.markerList, (marker) => {
           marker.setMap(null);
         });
-
         _.forEach(this.overlayList, (overlay) => {
           overlay.setMap(null);
         });
-      },
-
-      addMarker: _.debounce(function() {
-        this.removeMarker();
 
         this.markerList = [];
         this.overlayList = [];
+      },
 
+      addMarker() {
         _.forEach(this.stores, (storeList) => {
           _.forEach(storeList, (store) => {
+
             let position = new window.kakao.maps.LatLng(store.lat, store.lng);
 
             let marker = new window.kakao.maps.Marker({
@@ -88,7 +90,7 @@
             this.overlayList.push(overlay);
           });
         });
-      }, 250),
+      },
 
       updateCenterPosition: _.debounce(function() {
         let latlng = this.map.getCenter();
