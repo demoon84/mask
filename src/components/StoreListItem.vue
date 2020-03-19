@@ -8,10 +8,9 @@
 
     <div v-if="store.stock_at" class="store-list-item__input-time">입고시간: {{store.stock_at}}</div>
 
-    <el-button-group class="store-list-item__btn-group">
-      <el-button type="warning" size="mini" @click="handleFindLoad(store.name, store.lat, store.lng)">길찾기</el-button>
-      <el-button type="success" size="mini" @click="handleViewMap(store.lat, store.lng, store.code)">위치보기</el-button>
-    </el-button-group>
+    <el-row class="store-list-item__btn-group">
+      <el-button icon="el-icon-map-location" type="danger" circle size="small" @click="handleViewMap(store.lat, store.lng, store.code)"></el-button>
+    </el-row>
   </li>
 </template>
 
@@ -64,8 +63,8 @@
     margin: 10px 0 0 0;
     padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-    color: #909399;
-    line-height: 1.5;
+    color: #606266;
+    line-height: 1.3;
 
     &:first-child {
       margin-top: 0;
@@ -81,7 +80,7 @@
     }
 
     &__btn-group {
-      position: absolute;
+      position: absolute !important;
       top: 15px;
       right: 15px;
     }
@@ -122,5 +121,10 @@
     .sold-out {
       opacity: .8;
     }
+
+    .el-icon-map-location{
+      font-size: 16px;
+    }
+
   }
 </style>

@@ -214,6 +214,11 @@
           lng: position.coords.longitude
         };
 
+        this.mapCenter = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
         this.getStoreList(position.coords.latitude, position.coords.longitude);
       });
     }
@@ -223,11 +228,13 @@
 <style>
   html {
     -webkit-text-size-adjust: 100%;
+    height: 100%;
   }
 
   body {
     margin: 0;
     padding: 0;
+    height: 100%;
   }
 
   ul, li {
@@ -238,6 +245,7 @@
 
   #app {
     font-family: sans-serif;
+    height: 100%;
   }
 
   .store-map-close {
