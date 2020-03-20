@@ -63,6 +63,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
     color: #606266;
     line-height: 1.3;
+    cursor: pointer;
 
     &:first-child {
       margin-top: 0;
