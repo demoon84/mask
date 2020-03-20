@@ -5,6 +5,7 @@
               :position="position"
               :activeMap="activeMap"
               @updateActiveStore="handleUpdateActiveStore"
+              @updateZoomMap="handleUpdateZoomMap"
               @updateStoreMapCenter="handleUpdateStoreMapCenter" />
 
     <div v-show="enableCover" class="store-map-cover"></div>
@@ -140,6 +141,10 @@
         this.activeStore = false;
       },
 
+      handleUpdateZoomMap() {
+        this.position = this.mapCenter;
+      },
+
       handleUpdateFindData() {
         this.loading = Loading.service({
           fullscreen: true,
@@ -153,6 +158,7 @@
           lat: store.lat,
           lng: store.lng
         };
+
         this.mapCenter = this.position;
         this.activeMap = true;
         this.activeStore = store.code;

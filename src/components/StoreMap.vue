@@ -94,6 +94,7 @@
 
       updateCenterPosition: _.debounce(function() {
         let latlng = this.map.getCenter();
+
         this.$emit('updateStoreMapCenter', {lat: latlng.getLat(), lng: latlng.getLng()});
       }, 250)
     },
@@ -106,6 +107,10 @@
 
       window.kakao.maps.event.addListener(this.map, 'center_changed', () => {
         this.updateCenterPosition();
+      });
+
+      window.kakao.maps.event.addListener(this.map, 'zoom_changed', () => {
+        this.$emit('updateZoomMap');
       });
 
       this.addMarker();
