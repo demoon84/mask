@@ -1,5 +1,7 @@
 <template>
-  <li :class="['store-list-item', {'store-list-item--active': isActive}]" :id="`store-${store.code}`">
+  <li :class="['store-list-item', {'store-list-item--active': isActive}]"
+      :id="`store-${store.code}`"
+      @click="handleViewMap(store.lat, store.lng, store.code)">
     <div :class="[store.remain_stat, 'stat']">{{status}}</div>
 
     <div>{{store.name}} | <span class="store-list-item__distance">{{store.distance}}미터</span></div>
@@ -7,10 +9,6 @@
     <div>{{store.addr}}</div>
 
     <div v-if="store.stock_at" class="store-list-item__input-time">입고시간: {{store.stock_at}}</div>
-
-    <el-row class="store-list-item__btn-group">
-      <el-button icon="el-icon-map-location" type="danger" circle size="small" @click="handleViewMap(store.lat, store.lng, store.code)"></el-button>
-    </el-row>
   </li>
 </template>
 
@@ -79,16 +77,17 @@
       color: #333;
     }
 
-    &__btn-group {
-      position: absolute !important;
-      top: 15px;
-      right: 15px;
-    }
-
     &__input-time {
       border-top: 1px dotted #c3c3c3;
       margin-top: 5px;
       padding-top: 5px;
+    }
+
+    &__icon {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 16px;
     }
 
     .stat {
@@ -121,10 +120,5 @@
     .sold-out {
       opacity: .8;
     }
-
-    .el-icon-map-location{
-      font-size: 16px;
-    }
-
   }
 </style>

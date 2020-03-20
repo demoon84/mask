@@ -60,7 +60,6 @@
 
 <style lang="scss">
   .store-list {
-    height: 100%;
     padding: 40px 15px 15px 15px;
     box-sizing: border-box;
     overflow: auto;

@@ -7,6 +7,8 @@
               @updateActiveStore="handleUpdateActiveStore"
               @updateStoreMapCenter="handleUpdateStoreMapCenter" />
 
+    <div v-show="enableCover" class="store-map-cover"></div>
+
     <DataInfo :time="time"
               :canFind="canFind"
               :activeMap="activeMap"
@@ -101,6 +103,10 @@
         }
 
         return false;
+      },
+
+      enableCover() {
+        return this.loading && !this.activeMap;
       }
     },
 
@@ -137,7 +143,7 @@
       handleUpdateFindData() {
         this.loading = Loading.service({
           fullscreen: true,
-          background: 'rgba(0, 0, 0, 0.9)'
+          background: 'rgb(255, 255, 255, 0.95)'
         });
         this.getStoreList(this.mapCenter.lat, this.mapCenter.lng);
       },
@@ -198,6 +204,7 @@
 
         setTimeout(() => {
           this.loading.close();
+          this.loading = false;
         }, 500);
       }
     },
@@ -205,7 +212,7 @@
     created() {
       this.loading = Loading.service({
         fullscreen: true,
-        background: 'rgba(0, 0, 0, 0.9)'
+        background: 'rgba(255, 255, 255, 0.95)'
       });
 
       navigator.geolocation.getCurrentPosition((position) => {
@@ -228,13 +235,11 @@
 <style>
   html {
     -webkit-text-size-adjust: 100%;
-    height: 100%;
   }
 
   body {
     margin: 0;
     padding: 0;
-    height: 100%;
   }
 
   ul, li {
@@ -245,7 +250,6 @@
 
   #app {
     font-family: sans-serif;
-    height: 100%;
   }
 
   .store-map-close {
@@ -256,5 +260,15 @@
     z-index: 3;
     opacity: 0.9;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  .store-map-cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    z-index: 2;
   }
 </style>
