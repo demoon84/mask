@@ -15,10 +15,25 @@
               :activeMap="activeMap"
               @updateFindData="handleUpdateFindData" />
 
-    <StoreList :stores="stores"
-               :activeMap="activeMap"
-               :activeStore="activeStore"
-               @updateCenterPosition="handleUpdateCenterPosition" />
+    <div v-if="noData" :class='["store-no-data", {"store-no-data--active-map": noData && activeMap}]'>
+      검색 주변 1Km 내에 구매 가능한 곳이 없습니다.
+      <br>
+      <el-button
+        v-if="!this.activeMap"
+        type="danger"
+        icon="el-icon-map-location"
+        class="store-map-open"
+        size="mini"
+        @click="handleOpenMap">지도에서 이동하여 검색
+      </el-button>
+    </div>
+
+    <StoreList
+      v-if="!noData"
+      :stores="stores"
+      :activeMap="activeMap"
+      :activeStore="activeStore"
+      @updateCenterPosition="handleUpdateCenterPosition" />
 
     <el-button v-if="activeMap"
                type="danger"
@@ -58,6 +73,8 @@
         activeStore: '',
 
         canFind: false,
+
+        storesDataLength: 0,
 
         activeMap: false,
 
@@ -107,7 +124,11 @@
       },
 
       enableCover() {
-        return this.loading && !this.activeMap;
+        return (this.loading && !this.activeMap) || !this.activeMap;
+      },
+
+      noData() {
+        return (this.storesDataLength === 0) && !this.loading;
       }
     },
 
@@ -134,6 +155,10 @@
           if (unit === 'N') { dist = dist * 0.8684; }
           return dist;
         }
+      },
+
+      handleOpenMap() {
+        this.activeMap = true;
       },
 
       handleCloseMap() {
@@ -193,6 +218,9 @@
 
         let data = (await store(lat, lng)).data.stores;
 
+        // this.storesDataLength = 0;
+        this.storesDataLength = data.length;
+
         _.forEach(data, (d) => {
           d.distance = Math.floor(this.distance(d.lat, d.lng, lat, lng, 'K') * 1000);
         });
@@ -238,7 +266,7 @@
   };
 </script>
 
-<style>
+<style lang="scss">
   html {
     -webkit-text-size-adjust: 100%;
   }
@@ -268,6 +296,10 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  .store-map-open {
+    margin-top: 20px !important;
+  }
+
   .store-map-cover {
     position: fixed;
     top: 0;
@@ -276,5 +308,21 @@
     bottom: 0;
     background: #fff;
     z-index: 2;
+  }
+
+  .store-no-data {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    background: #fff;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 2;
+    text-align: center;
+    font-size: 12px;
+
+    &--active-map {
+      margin-top: 25vh;
+    }
   }
 </style>
