@@ -11,9 +11,9 @@
     <div v-show="enableCover" class="store-map-cover"></div>
 
     <DataInfo :time="time"
-              :canFind="canFind"
               :activeMap="activeMap"
-              @updateFindData="handleUpdateFindData" />
+              @updateFindPinData="handleUpdateFindPinData"
+              @updateFindCurrentData="handleUpdateFindCurrentData" />
 
     <div v-if="noData" :class='["store-no-data", {"store-no-data--active-map": noData && activeMap}]'>
       검색 주변 1Km 내에 구매 가능한 곳이 없습니다.
@@ -170,12 +170,24 @@
         this.position = this.mapCenter;
       },
 
-      handleUpdateFindData() {
-        this.loading = Loading.service({
-          fullscreen: true,
-          background: 'rgb(255, 255, 255, 0.95)'
-        });
+      handleUpdateFindPinData() {
         this.getStoreList(this.mapCenter.lat, this.mapCenter.lng);
+      },
+
+      handleUpdateFindCurrentData() {
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.position = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          this.mapCenter = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          this.getStoreList(position.coords.latitude, position.coords.longitude);
+        });
       },
 
       handleUpdateCenterPosition(store) {
@@ -206,6 +218,11 @@
       },
 
       async getStoreList(lat, lng) {
+        this.loading = Loading.service({
+          fullscreen: true,
+          background: 'rgb(255, 255, 255, 0.95)'
+        });
+
         this.canFind = false;
 
         this.stores = {
@@ -249,19 +266,7 @@
         background: 'rgba(255, 255, 255, 0.95)'
       });
 
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.position = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-
-        this.mapCenter = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-
-        this.getStoreList(position.coords.latitude, position.coords.longitude);
-      });
+      this.handleUpdateFindCurrentData();
     }
   };
 </script>

@@ -1,11 +1,8 @@
 <template>
   <div class="data-info">
     <div class="data-info__time">데이터 업데이트: {{updateTime}}</div>
-
-    <a href="#" @click.prevent="handleUpdateData" class="data-info__find">
-      <span v-if="visiblePointFind"><i class="el-icon-location"></i> 지점에서</span>
-      <i v-else class="el-icon-refresh"></i>
-      재검색</a>
+    <a href="#" v-if="visiblePointFind" @click.prevent="handleUpdatePinPositionData" class="data-info__find data-info__find--pin"><span><i class="el-icon-location"></i>지점에서</span> 재검색</a>
+    <a href="#" @click.prevent="handleUpdateCurrentPositionData" class="data-info__find data-info__find--current">나의 위치에서 재검색</a>
   </div>
 </template>
 
@@ -17,7 +14,6 @@
 
     props: [
       'time',
-      'canFind',
       'activeMap'
     ],
 
@@ -26,13 +22,16 @@
         return this.time ? moment(this.time.created_at).calendar() : '';
       },
       visiblePointFind() {
-        return this.canFind && this.activeMap;
+        return this.activeMap;
       }
     },
 
     methods: {
-      handleUpdateData() {
-        this.$emit('updateFindData');
+      handleUpdatePinPositionData() {
+        this.$emit('updateFindPinData');
+      },
+      handleUpdateCurrentPositionData() {
+        this.$emit('updateFindCurrentData');
       }
     }
   };
@@ -50,12 +49,11 @@
       top: 6px;
       left: 6px;
       z-index: 3;
+      cursor: pointer;
     }
 
     &__find {
       position: fixed;
-      top: 6px;
-      right: 14px;
       z-index: 3;
       text-decoration: none;
       color: #fff;
@@ -68,6 +66,17 @@
 
       i {
         color: #fff;
+      }
+
+      &--pin {
+        top: 40px;
+        right: 14px;
+      }
+
+
+      &--current {
+        top: 6px;
+        right: 14px;
       }
     }
   }
